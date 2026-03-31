@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAMPS — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --dark: #0F0D0A;
+    --dark2: #1A1712;
+    --dark3: #242018;
+    --dark4: #2E2B22;
+    --cream: #F5EDD8;
+    --cream2: #EDE0C4;
+    --muted: #8A8070;
+    --danger: #E05A5A;
+    --success: #5AB87A;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: flex; }
+
+  /* ── AUTH LAYOUT ── */
+  .auth-layout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  .auth-left {
+    flex: 1;
+    background: var(--dark2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-left::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    pointer-events: none;
+  }
+  .auth-left::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    bottom: -80px; right: -80px;
+    pointer-events: none;
+  }
+
+  .brand {
+    text-align: center;
+    z-index: 1;
+    margin-bottom: 3rem;
+  }
+
+  .brand-icon {
+    width: 72px; height: 72px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.2rem;
+    font-size: 28px;
+  }
+
+  .brand h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+
+  .brand p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  .auth-illustration {
+    z-index: 1;
+    opacity: 0.6;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.8;
+    max-width: 260px;
+  }
+
+  .auth-right {
+    width: 480px;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 3.5rem;
+    border-left: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .auth-right h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 0.4rem;
+  }
+
+  .auth-right .subtitle {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 2.2rem;
+  }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 1.3rem; }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], input[type="tel"], select {
+    width: 100%;
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--gold);
+  }
+
+  input::placeholder { color: var(--muted); }
+
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .btn {
+    width: 100%;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn:active { transform: scale(0.98); }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  .btn-gold:hover { opacity: 0.9; }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    margin-top: 0.6rem;
+  }
+
+  .btn-outline:hover { background: rgba(201,168,76,0.07); }
+
+  .switch-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .switch-link a {
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 1rem;
+    color: var(--muted); font-size: 0.8rem;
+    margin: 1rem 0;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(201,168,76,0.15);
+  }
+
+  .error-msg {
+    background: rgba(224,90,90,0.12);
+    border: 1px solid rgba(224,90,90,0.3);
+    color: #E05A5A;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.83rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* ── ADMIN ── */
+  .admin-layout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-topbar {
+    background: var(--dark2);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .admin-topbar .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 0.85rem;
+  }
+
+  .admin-user-name { font-size: 0.88rem; color: var(--cream2); }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid rgba(201,168,76,0.25);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-logout:hover { border-color: var(--gold); color: var(--gold); }
+
+  .admin-body { display: flex; flex: 1; }
+
+  .sidebar {
+    width: 230px;
+    background: var(--dark2);
+    border-right: 1px solid rgba(201,168,76,0.1);
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .sidebar-section {
+    padding: 0.4rem 1.5rem 0.2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(138,128,112,0.5);
+    margin-top: 0.8rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .nav-item:hover { color: var(--cream); background: rgba(201,168,76,0.05); }
+
+  .nav-item.active {
+    color: var(--gold);
+    border-left-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+
+  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .admin-main {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    overflow-y: auto;
+  }
+
+  .admin-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  .admin-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    color: var(--cream);
+  }
+
+  .admin-header p { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+
+  .stat-card .slabel {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .stat-card .sval {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .stat-card .stag {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 0.4rem;
+  }
+
+  .panel {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .panel-header h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    padding: 0.8rem 1.5rem;
+    text-align: left;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(0,0,0,0.15);
+    font-weight: 500;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(201,168,76,0.06);
+    transition: background 0.12s;
+  }
+
+  tbody tr:hover { background: rgba(201,168,76,0.04); }
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody td {
+    padding: 0.95rem 1.5rem;
+    color: var(--cream2);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-active { background: rgba(90,184,122,0.15); color: #5AB87A; }
+  .badge-pending { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .badge-inactive { background: rgba(138,128,112,0.15); color: var(--muted); }
+
+  .content-section { display: none; }
+  .content-section.active { display: block; }
+
+  /* Responsive */
+  @media (max-width: 820px) {
+    .auth-left { display: none; }
+    .auth-right { width: 100%; padding: 2rem 1.5rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .sidebar { width: 60px; }
+    .sidebar-section, .nav-item span { display: none; }
+    .nav-item { justify-content: center; padding: 0.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN PAGE ══════════════ -->
+<div class="page active" id="page-login">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon">🪔</div>
+        <h1>LAMPS</h1>
+        <p>Illuminate your world</p>
+      </div>
+      <div class="auth-illustration">
+        Premium lighting solutions crafted for your home &amp; workspace.<br><br>
+        Sign in to manage your orders, track deliveries, and explore our exclusive collection.
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to your LAMPS account</p>
+
+      <div class="error-msg" id="login-error">Invalid credentials. Please try again.</div>
+
+      <div class="form-group">
+        <label>Email or Mobile Number</label>
+        <input type="text" id="login-id" placeholder="you@email.com or 9876543210">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pw" placeholder="Enter your password">
+      </div>
+
+      <button class="btn btn-gold" onclick="doLogin()">Sign In</button>
+
+      <div class="divider">or</div>
+
+      <button class="btn btn-outline" onclick="showPage('page-signup')">Create New Account</button>
+
+      <div class="switch-link">
+        Admin? <a onclick="showPage('page-admin-login')">Admin Login →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SIGN UP PAGE ══════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon">🪔</div>
+        <h1>LAMPS</h1>
+        <p>Illuminate your world</p>
+      </div>
+      <div class="auth-illustration">
+        Join thousands of customers who trust LAMPS for premium lighting. Get exclusive deals and early access to new collections.
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <h2>Create Account</h2>
+      <p class="subtitle">Fill in your details to get started</p>
+
+      <div class="error-msg" id="signup-error">Please fill in all required fields.</div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" id="su-fname" placeholder="Arun">
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" id="su-lname" placeholder="Kumar">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="su-email" placeholder="arun@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Mobile Number *</label>
+        <input type="tel" id="su-mobile" placeholder="9876543210" maxlength="10">
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="su-gender">
+          <option value="">Select gender</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" id="su-pw" placeholder="Min 8 characters">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password *</label>
+          <input type="password" id="su-pw2" placeholder="Repeat password">
+        </div>
+      </div>
+
+      <button class="btn btn-gold" onclick="doSignup()">Create Account</button>
+
+      <div class="switch-link" style="margin-top:1.2rem">
+        Already have an account? <a onclick="showPage('page-login')">Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN LOGIN PAGE ══════════════ -->
+<div class="page" id="page-admin-login">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon">⚙️</div>
+        <h1>LAMPS</h1>
+        <p>Admin Portal</p>
+      </div>
+      <div class="auth-illustration">
+        Restricted area. Authorised personnel only. Manage inventory, users, and orders from one central panel.
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <h2>Admin Login</h2>
+      <p class="subtitle">Enter admin credentials to continue</p>
+
+      <div class="error-msg" id="admin-login-error">Invalid admin credentials.</div>
+
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input type="email" id="admin-email" placeholder="admin@lamps.com">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-pw" placeholder="Admin password">
+      </div>
+
+      <button class="btn btn-gold" onclick="doAdminLogin()">Access Dashboard</button>
+
+      <div class="switch-link">
+        <a onclick="showPage('page-login')">← Back to User Login</a>
+      </div>
+
+      <p style="font-size:0.75rem; color:var(--muted); text-align:center; margin-top:1rem;">
+        Demo: admin@lamps.com / admin123
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<div class="page" id="page-admin">
+  <div class="admin-layout">
+
+    <div class="admin-topbar">
+      <div class="logo">🪔 LAMPS</div>
+      <div class="topbar-right">
+        <div class="avatar" id="admin-avatar">AD</div>
+        <span class="admin-user-name" id="admin-display-name">Admin</span>
+        <button class="btn-logout" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin-body">
+      <div class="sidebar">
+        <div class="sidebar-section">Main</div>
+        <div class="nav-item active" onclick="switchTab('dashboard', this)">
+          <span class="icon">📊</span><span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('users', this)">
+          <span class="icon">👥</span><span>Users</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('orders', this)">
+          <span class="icon">📦</span><span>Orders</span>
+        </div>
+        <div class="sidebar-section">Catalogue</div>
+        <div class="nav-item" onclick="switchTab('products', this)">
+          <span class="icon">🛍️</span><span>Products</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('inventory', this)">
+          <span class="icon">📋</span><span>Inventory</span>
+        </div>
+        <div class="sidebar-section">Settings</div>
+        <div class="nav-item" onclick="switchTab('settings', this)">
+          <span class="icon">⚙️</span><span>Settings</span>
+        </div>
+      </div>
+
+      <div class="admin-main">
+
+        <!-- DASHBOARD -->
+        <div class="content-section active" id="tab-dashboard">
+          <div class="admin-header">
+            <div>
+              <h2>Dashboard</h2>
+              <p>Welcome back. Here's what's happening today.</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="slabel">Total Users</div>
+              <div class="sval">1,248</div>
+              <div class="stag">↑ 12% this month</div>
+            </div>
+            <div class="stat-card">
+              <div class="slabel">Orders Today</div>
+              <div class="sval">84</div>
+              <div class="stag">↑ 8% vs yesterday</div>
+            </div>
+            <div class="stat-card">
+              <div class="slabel">Revenue (₹)</div>
+              <div class="sval">2.4L</div>
+              <div class="stag">↑ 5% this week</div>
+            </div>
+            <div class="stat-card">
+              <div class="slabel">Products</div>
+              <div class="sval">342</div>
+              <div class="stag">18 low stock</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Recent Orders</h3>
+              <span style="font-size:0.8rem; color:var(--gold); cursor:pointer;" onclick="switchTab('orders', document.querySelector('[onclick*=orders]'))">View all →</span>
+            </div>
+            <table>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>#ORD-1091</td><td>Priya S.</td><td>Edison Filament Set</td><td>₹2,490</td><td><span class="badge badge-active">Delivered</span></td></tr>
+                <tr><td>#ORD-1090</td><td>Rahul M.</td><td>Pendant Cluster</td><td>₹5,800</td><td><span class="badge badge-pending">Processing</span></td></tr>
+                <tr><td>#ORD-1089</td><td>Anita R.</td><td>Arc Floor Lamp</td><td>₹3,200</td><td><span class="badge badge-active">Delivered</span></td></tr>
+                <tr><td>#ORD-1088</td><td>Karthik V.</td><td>Bedside Set x2</td><td>₹1,980</td><td><span class="badge badge-pending">Shipped</span></td></tr>
+                <tr><td>#ORD-1087</td><td>Meera T.</td><td>Neon Strip 5m</td><td>₹890</td><td><span class="badge badge-inactive">Cancelled</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="content-section" id="tab-users">
+          <div class="admin-header">
+            <div><h2>Users</h2><p>All registered customers</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h3>User List</h3></div>
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Joined</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Priya Sharma</td><td>priya@mail.com</td><td>9876543210</td><td>Jan 2025</td><td><span class="badge badge-active">Active</span></td></tr>
+                <tr><td>Rahul Mehta</td><td>rahul@mail.com</td><td>9123456780</td><td>Feb 2025</td><td><span class="badge badge-active">Active</span></td></tr>
+                <tr><td>Anita Raj</td><td>anita@mail.com</td><td>9000012345</td><td>Mar 2025</td><td><span class="badge badge-pending">Unverified</span></td></tr>
+                <tr><td>Karthik V.</td><td>karthik@mail.com</td><td>9988776655</td><td>Mar 2025</td><td><span class="badge badge-inactive">Inactive</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="content-section" id="tab-orders">
+          <div class="admin-header">
+            <div><h2>Orders</h2><p>All customer orders</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h3>Order List</h3></div>
+            <table>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>#ORD-1091</td><td>Priya S.</td><td>Edison Filament Set</td><td>30 Mar 2026</td><td>₹2,490</td><td><span class="badge badge-active">Delivered</span></td></tr>
+                <tr><td>#ORD-1090</td><td>Rahul M.</td><td>Pendant Cluster</td><td>29 Mar 2026</td><td>₹5,800</td><td><span class="badge badge-pending">Processing</span></td></tr>
+                <tr><td>#ORD-1089</td><td>Anita R.</td><td>Arc Floor Lamp</td><td>28 Mar 2026</td><td>₹3,200</td><td><span class="badge badge-active">Delivered</span></td></tr>
+                <tr><td>#ORD-1088</td><td>Karthik V.</td><td>Bedside Set x2</td><td>27 Mar 2026</td><td>₹1,980</td><td><span class="badge badge-pending">Shipped</span></td></tr>
+                <tr><td>#ORD-1087</td><td>Meera T.</td><td>Neon Strip 5m</td><td>26 Mar 2026</td><td>₹890</td><td><span class="badge badge-inactive">Cancelled</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="content-section" id="tab-products">
+          <div class="admin-header">
+            <div><h2>Products</h2><p>Manage your catalogue</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h3>Product List</h3></div>
+            <table>
+              <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Edison Filament Bulb Set</td><td>Bulbs</td><td>₹2,490</td><td>120</td><td><span class="badge badge-active">Active</span></td></tr>
+                <tr><td>Pendant Cluster Light</td><td>Pendant</td><td>₹5,800</td><td>34</td><td><span class="badge badge-active">Active</span></td></tr>
+                <tr><td>Arc Floor Lamp</td><td>Floor Lamps</td><td>₹3,200</td><td>8</td><td><span class="badge badge-pending">Low Stock</span></td></tr>
+                <tr><td>Bedside Table Lamp</td><td>Table Lamps</td><td>₹990</td><td>0</td><td><span class="badge badge-inactive">Out of Stock</span></td></tr>
+                <tr><td>Neon Strip 5m</td><td>Strips</td><td>₹890</td><td>200</td><td><span class="badge badge-active">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INVENTORY -->
+        <div class="content-section" id="tab-inventory">
+          <div class="admin-header">
+            <div><h2>Inventory</h2><p>Stock levels overview</p></div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="slabel">Total SKUs</div><div class="sval">342</div></div>
+            <div class="stat-card"><div class="slabel">In Stock</div><div class="sval">298</div><div class="stag" style="color:var(--success)">87%</div></div>
+            <div class="stat-card"><div class="slabel">Low Stock</div><div class="sval">18</div><div class="stag" style="color:var(--gold)">Reorder soon</div></div>
+            <div class="stat-card"><div class="slabel">Out of Stock</div><div class="sval">26</div><div class="stag" style="color:var(--danger)">Action needed</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h3>Low Stock Items</h3></div>
+            <table>
+              <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Reorder Level</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Arc Floor Lamp</td><td>LMP-AFL-01</td><td>8</td><td>20</td><td><span class="badge badge-pending">Low Stock</span></td></tr>
+                <tr><td>Crystal Chandelier</td><td>LMP-CHN-03</td><td>3</td><td>10</td><td><span class="badge badge-pending">Low Stock</span></td></tr>
+                <tr><td>Bedside Table Lamp</td><td>LMP-TBL-02</td><td>0</td><td>15</td><td><span class="badge badge-inactive">Out of Stock</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="content-section" id="tab-settings">
+          <div class="admin-header">
+            <div><h2>Settings</h2><p>Manage account and app configuration</p></div>
+          </div>
+          <div class="panel" style="padding: 1.5rem;">
+            <div class="panel-header" style="padding: 0 0 1rem; margin-bottom:1.2rem;"><h3>Admin Profile</h3></div>
+            <div class="input-row" style="margin-bottom:1rem;">
+              <div class="form-group"><label>First Name</label><input type="text" value="Admin"></div>
+              <div class="form-group"><label>Last Name</label><input type="text" value="User"></div>
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" value="admin@lamps.com"></div>
+            <div class="form-group" style="margin-top:1rem;"><label>New Password</label><input type="password" placeholder="Leave blank to keep current"></div>
+            <button class="btn btn-gold" style="max-width:200px; margin-top:0.5rem;">Save Changes</button>
+          </div>
+        </div>
+
+      </div><!-- /admin-main -->
+    </div><!-- /admin-body -->
+  </div>
+</div>
+
+<script>
+  // ── NAVIGATION ──
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    el.classList.add('active');
+  }
+
+  // ── LOGIN ──
+  function doLogin() {
+    const id = document.getElementById('login-id').value.trim();
+    const pw = document.getElementById('login-pw').value.trim();
+    const err = document.getElementById('login-error');
+
+    if (!id || !pw) {
+      err.textContent = 'Please enter your email/mobile and password.';
+      err.style.display = 'block'; return;
+    }
+
+    err.style.display = 'none';
+    // Demo: any valid-looking input works
+    alert('Logged in successfully as: ' + id);
+  }
+
+  // ── SIGNUP ──
+  function doSignup() {
+    const fname = document.getElementById('su-fname').value.trim();
+    const lname = document.getElementById('su-lname').value.trim();
+    const email = document.getElementById('su-email').value.trim();
+    const mobile = document.getElementById('su-mobile').value.trim();
+    const pw = document.getElementById('su-pw').value;
+    const pw2 = document.getElementById('su-pw2').value;
+    const err = document.getElementById('signup-error');
+
+    if (!fname || !lname || !email || !mobile || !pw || !pw2) {
+      err.textContent = 'Please fill in all required fields.';
+      err.style.display = 'block'; return;
+    }
+    if (pw.length < 8) {
+      err.textContent = 'Password must be at least 8 characters.';
+      err.style.display = 'block'; return;
+    }
+    if (pw !== pw2) {
+      err.textContent = 'Passwords do not match.';
+      err.style.display = 'block'; return;
+    }
+    err.style.display = 'none';
+    alert('Account created successfully! Welcome, ' + fname + '!');
+    showPage('page-login');
+  }
+
+  // ── ADMIN LOGIN ──
+  function doAdminLogin() {
+    const email = document.getElementById('admin-email').value.trim();
+    const pw = document.getElementById('admin-pw').value.trim();
+    const err = document.getElementById('admin-login-error');
+
+    if (email === 'admin@lamps.com' && pw === 'admin123') {
+      err.style.display = 'none';
+      document.getElementById('admin-display-name').textContent = 'Admin';
+      document.getElementById('admin-avatar').textContent = 'AD';
+      showPage('page-admin');
+    } else {
+      err.textContent = 'Invalid admin credentials. Try admin@lamps.com / admin123';
+      err.style.display = 'block';
+    }
+  }
+
+  // ── LOGOUT ──
+  function doLogout() {
+    if (confirm('Are you sure you want to logout?')) showPage('page-login');
+  }
+
+  // Allow Enter key on login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const p = document.querySelector('.page.active');
+      if (p.id === 'page-login') doLogin();
+      else if (p.id === 'page-signup') doSignup();
+      else if (p.id === 'page-admin-login') doAdminLogin();
+    }
+  });
+</script>
+</body>
+</html>
